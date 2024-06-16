@@ -2,7 +2,7 @@ import json
 
 def LoadCircoData():
     data = []
-    with open('data/france-circonscriptions-legislatives-2012.json') as f:
+    with open('data/france-circonscriptions-legislatives-2012.json', encoding="utf8") as f:
         d = json.load(f)
 
         data = d["features"]

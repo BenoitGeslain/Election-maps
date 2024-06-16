@@ -4,15 +4,11 @@ from bokeh.io import curdoc, show
 from bokeh.models import ColumnDataSource, Grid, LinearAxis, MultiPolygons, Plot, WheelZoomTool, PanTool, HoverTool
 
 from utils.maps import *
-from utils.nfp import *
 
 TOOLTIPS = [
     ("Département", "@departement"),
     ("Circo", "@circo"),
-    ("Candidat", "@candidat"),
 ]
-
-NFPData = LoadNFPData()
 
 plot = Plot(title=None, match_aspect=True)
 xaxis = LinearAxis()
@@ -27,7 +23,7 @@ plot.add_layout(Grid(dimension=0, ticker=xaxis.ticker))
 plot.add_layout(Grid(dimension=1, ticker=yaxis.ticker))
 
 for circo in LoadCircoData():
-    print(f'{circo["properties"]["nom_reg"]} - {circo["properties"]["nom_dpt"]} - Circo  {circo["properties"]["code_dpt"]}-{int(circo["properties"]["num_circ"]):02d}')
+    print(f'{circo["properties"]["nom_reg"]} - {circo["properties"]["nom_dpt"]} - Circo  {circo["properties"]["code_dpt"]}-{circo["properties"]["num_circ"]}')
     # unnested = list(chain(*circo["geometry"]["coordinates"]))
     # print(unnested)
     lonData = []
@@ -39,11 +35,9 @@ for circo in LoadCircoData():
             lon, lat = zip(*list(chain(*coordinates)))
 
         glyph = MultiPolygons(xs="lon", ys="lat", line_width=1)
-        c = f'{circo["properties"]["code_dpt"]}-{int(circo["properties"]["num_circ"]):02d}'
         plot.add_glyph(ColumnDataSource(dict(lon=[[[list(lon)]]], lat=[[[list(lat)]]],
                                              departement=[f'{circo["properties"]["nom_dpt"]}'],
-                                             circo=[f'{circo["properties"]["code_dpt"]}-{circo["properties"]["num_circ"]}'],
-                                             candidat=[" ".join([NFPData[c]["prenom_candidat"], NFPData[c]["nom_candidat"]])])),
+                                             circo=[f'{circo["properties"]["code_dpt"]}-{circo["properties"]["num_circ"]}'])),
                                         glyph)
 
     # break
