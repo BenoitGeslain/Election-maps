@@ -36,7 +36,7 @@ def LoadCircoData():
     with open('data/france-circonscriptions-legislatives-2012.json', encoding="utf8") as f:
         data = json.load(f)
 
-        data['features'] = [circo for circo in data['features'] if circo['properties']['code_reg'].isdigit()]
+        data['features'] = [circo for circo in data['features'] if circo['properties']['code_reg'].isdigit() and int(circo['properties']['code_reg'])<96]
         for circo in data['features']:
             if not circo["properties"]["nom_reg"] in regions:
                 regions.append(circo["properties"]["nom_reg"])
@@ -44,7 +44,16 @@ def LoadCircoData():
                 departements.append(circo["properties"]["nom_dpt"])
         return data, regions, departements
 
+def LoadRegionData():
+    data = []
+    with open('data/regions-france.json', encoding="utf8") as f:
+        data = json.load(f)
 
-        # for circo in data:
-        #     coordinates = circo["geometry"]["coordinates"]
-        #     print(coordinates)
+        return data
+
+def LoadDepartementData():
+    data = []
+    with open('data/departements-france.json', encoding="utf8") as f:
+        data = json.load(f)
+
+        return data

@@ -16,6 +16,7 @@ colors = {
 }
 
 TOOLTIPS = [
+    ("Région", "@region"),
     ("Département", "@departement"),
     ("Circo", "@circo"),
     ("Parti", "@party"),
@@ -24,13 +25,15 @@ TOOLTIPS = [
 ]
 
 data, regions, departements = LoadCircoData()
+regionData = LoadRegionData()
+departementData = LoadDepartementData()
 candidates, NFPParties = LoadNFPData()
 
 multiChoiceParties = MultiChoice(title="Partis", value=NFPParties, options=NFPParties)
 multiChoiceParties.js_on_change("value", CustomJS(code="""
     console.log('multiChoiceParties: value=' + this.value, this.toString())
 """))
-autoCompleteRegions =  AutocompleteInput(title="Régions:", completions=regions, case_sensitive=False, min_characters=1, search_strategy="includes", restrict=True)
+autoCompleteRegions =  AutocompleteInput(title="Région:", completions=regions, case_sensitive=False, min_characters=1, search_strategy="includes", restrict=True)
 autoCompleteRegions.js_on_change("value", CustomJS(code="""
     console.log('multiChoiceParties: value=' + this.value, this.toString())
 """))
@@ -47,19 +50,26 @@ for i in range(len(data["features"])):
     data['features'][i]['properties']['party'] = party
     data['features'][i]['properties']['candidate'] = f"{candidateData['prenom_candidat']} {candidateData['nom_candidat']}"
     data['features'][i]['properties']['suppleant'] = f"{candidateData['prenom_suppleant']} {candidateData['nom_suppleant']}"
-    data['features'][i]['properties']['region'] = data["features"][i]["properties"]["code_reg"]
-    data['features'][i]['properties']['departement'] = data["features"][i]["properties"]["code_dpt"]
-    data['features'][i]['properties']['circo'] = circo
+    data['features'][i]['properties']['region'] = data["features"][i]["properties"]["nom_reg"]
+    data['features'][i]['properties']['departement'] = data["features"][i]["properties"]["nom_dpt"]
+    data['features'][i]['properties']['circo'] = f'{data["features"][i]["properties"]["num_circ"]}'
 
-geo_source = GeoJSONDataSource(geojson=json.dumps(data))
+geoSource = GeoJSONDataSource(geojson=json.dumps(data))
+geoRegionSource = GeoJSONDataSource(geojson=json.dumps(regionData))
+geoDepartementSource = GeoJSONDataSource(geojson=json.dumps(departementData))
 
 output_file(filename="output/index.html", title="Front Populaire")
-p = figure(background_fill_color="white", width=500, height=500, match_aspect=True,
+hoverTool = HoverTool(tooltips=TOOLTIPS)
+p = figure(background_fill_color="gainsboro", width=1000, height=1000, match_aspect=True,
             x_range=(-7, 11), y_range=(40, 54),
-            tools=[PanTool(), WheelZoomTool(), HoverTool(tooltips=TOOLTIPS)])
+            tools=[PanTool(), WheelZoomTool(), hoverTool])
+
+circoPatches = p.patches('xs', 'ys', source=geoSource, line_width=0.5, line_color="white", fill_color='color')
+p.patches('xs', 'ys', source=geoDepartementSource, line_width=1, line_color="white", fill_alpha=0)
+# p.patches('xs', 'ys', source=geoRegionSource, line_width=1.5, line_color="white", fill_alpha=0)
+
+hoverTool.renderers = [circoPatches]
 
 p.axis.visible = False
-
-p.patches('xs', 'ys', source=geo_source, line_width=1, line_color="light_grey", fill_color='color')
 
 show(column(multiChoiceParties, autoCompleteRegions, autoCompleteDepartements, p))
