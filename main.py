@@ -71,5 +71,7 @@ p.patches('xs', 'ys', source=geoDepartementSource, line_width=1, line_color="whi
 hoverTool.renderers = [circoPatches]
 
 p.axis.visible = False
+p.xgrid.grid_line_color = None
+p.ygrid.grid_line_color = None
 
 show(column(multiChoiceParties, autoCompleteRegions, autoCompleteDepartements, p))
