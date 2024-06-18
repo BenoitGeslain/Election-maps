@@ -53,7 +53,7 @@ for i in range(len(data["features"])):
 
 geo_source = GeoJSONDataSource(geojson=json.dumps(data))
 
-output_file(filename="output/input.html", title="Front Populaire")
+output_file(filename="output/index.html", title="Front Populaire")
 p = figure(background_fill_color="white", width=500, height=500, match_aspect=True,
             x_range=(-7, 11), y_range=(40, 54),
             tools=[PanTool(), WheelZoomTool(), HoverTool(tooltips=TOOLTIPS)])
