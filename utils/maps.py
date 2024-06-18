@@ -34,10 +34,10 @@ def LoadCircoData():
     regions = []
     departements = []
     with open('data/france-circonscriptions-legislatives-2012.json', encoding="utf8") as f:
-        d = json.load(f)
+        data = json.load(f)
 
-        data = d["features"]
-        for circo in data:
+        data['features'] = [circo for circo in data['features'] if circo['properties']['code_reg'].isdigit()]
+        for circo in data['features']:
             if not circo["properties"]["nom_reg"] in regions:
                 regions.append(circo["properties"]["nom_reg"])
             if not circo["properties"]["nom_dpt"] in departements:
