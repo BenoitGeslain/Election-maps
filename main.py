@@ -39,7 +39,7 @@ autoCompleteRegions.js_on_change("value", CustomJS(code="""
 """))
 autoCompleteDepartements =  AutocompleteInput(title="Département:", completions=departements, case_sensitive=False, search_strategy="includes")
 autoCompleteDepartements.js_on_change("value", CustomJS(code="""
-    console.log('multiChoiceParties: value=' + this.toString())
+    console.log('multiChoiceParties: value=' + this.value, this.toString())
 """))
 
 for i in range(len(data["features"])):
@@ -60,6 +60,9 @@ geoDepartementSource = GeoJSONDataSource(geojson=json.dumps(departementData))
 
 output_file(filename="output/index.html", title="Front Populaire")
 hoverTool = HoverTool(tooltips=TOOLTIPS)
+# hoverTool.js_on_change("value", CustomJS(code="""
+#     console.log('multiChoiceParties: value=' + this.value, this.toString())
+# """))
 p = figure(background_fill_color="gainsboro", width=1000, height=1000, match_aspect=True,
             x_range=(-7, 11), y_range=(40, 54),
             tools=[PanTool(), WheelZoomTool(), hoverTool])
