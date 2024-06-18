@@ -2,6 +2,7 @@ from itertools import chain
 
 from bokeh.io import curdoc, show
 from bokeh.models import ColumnDataSource, Grid, LinearAxis, MultiPolygons, Plot, WheelZoomTool, PanTool, HoverTool
+from bokeh.plotting import output_file
 
 from utils.maps import *
 from utils.nfp import *
@@ -12,9 +13,18 @@ TOOLTIPS = [
     ("Candidat", "@candidat"),
 ]
 
+NFPCOLORS = {
+    "PS": "hotpink",
+    "FI": "red",
+    "PCF": "firebrick",
+    "PE": "limegreen",
+    "-": "dimgrey"
+}
+
 NFPData = LoadNFPData()
 
-plot = Plot(title=None, match_aspect=True)
+output_file(filename="carte_front_pop.html", title="Candidats du Front Populaire")
+plot = Plot(title=None, width=500, height=500, match_aspect=True)
 xaxis = LinearAxis()
 plot.add_layout(xaxis, 'below')
 
@@ -38,12 +48,12 @@ for circo in LoadCircoData():
         except ValueError:
             lon, lat = zip(*list(chain(*coordinates)))
 
-        glyph = MultiPolygons(xs="lon", ys="lat", line_width=1)
         c = f'{circo["properties"]["code_dpt"]}-{int(circo["properties"]["num_circ"]):02d}'
+        glyph = MultiPolygons(xs="lon", ys="lat", line_width=0.5, line_color="black", fill_color=NFPCOLORS[NFPData[c]["etiquette"]])
         plot.add_glyph(ColumnDataSource(dict(lon=[[[list(lon)]]], lat=[[[list(lat)]]],
                                              departement=[f'{circo["properties"]["nom_dpt"]}'],
                                              circo=[f'{circo["properties"]["code_dpt"]}-{circo["properties"]["num_circ"]}'],
-                                             candidat=[" ".join([NFPData[c]["prenom_candidat"], NFPData[c]["nom_candidat"]])])),
+                                             candidat=[" ".join([NFPData[c]["etiquette"], NFPData[c]["prenom_candidat"], NFPData[c]["nom_candidat"]])])),
                                         glyph)
 
     # break
