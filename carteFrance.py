@@ -23,7 +23,7 @@ NFPCOLORS = {
 
 NFPData = LoadNFPData()
 
-output_file(filename="carte_front_pop.html", title="Candidats du Front Populaire")
+output_file(filename="output/carte_front_pop.html", title="Front Populaire")
 plot = Plot(title=None, width=500, height=500, match_aspect=True)
 xaxis = LinearAxis()
 plot.add_layout(xaxis, 'below')
