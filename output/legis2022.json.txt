@@ -1,8 +1,8 @@
 Champ présent dans les données géo des circo
 - "ID": "33004",
 - "code_dpt": "33",
-- "nom_dpt": "GIRONDE",
-- "nom_reg": "AQUITAINE-LIMOUSIN-POITOU-CHARENTES",
+- "Département": "GIRONDE",
+- "Région": "AQUITAINE-LIMOUSIN-POITOU-CHARENTES",
 - "num_circ": "4",
 - "code_reg": "75",
 

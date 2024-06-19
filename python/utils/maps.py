@@ -44,6 +44,9 @@ def LoadCircoData():
                 departements.append(circo["properties"]["nom_dpt"])
         return data, regions, departements
 
+def LoadGeoData():
+
+
 def LoadRegionData():
     data = []
     with open('data/regions-france.json', encoding="utf8") as f:

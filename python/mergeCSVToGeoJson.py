@@ -63,7 +63,7 @@ def Loadlegis2022Data():
                                                 "Candidat NUPES ou Dissident de gauche": candidatNupes,
                                                 "Contre": "",
                                                 "Elu": elu,
-                                                "Gagné": voix > voixVs,
+                                                "Gagné": "Oui" if (voix > voixVs) else "Non",
                                                 "Ecart de voix": voix - voixVs,
                                                 "Ecart de voix (valeur absolue)": abs(voix - voixVs)
                             }
@@ -82,7 +82,7 @@ def Loadlegis2022Data():
                                     "Candidat NUPES ou Dissident de gauche": f'{row[f"Prénom{idNFP}"]} {row[f"Nom{idNFP}"]}',
                                     "Contre": contre,
                                     "Elu": elu,
-                                    "Gagné": int(row[f"Voix{idNFP}"]) > int(row[f"Voix{idVS}"]),
+                                    "Gagné": "Oui" if (int(row[f"Voix{idNFP}"]) > int(row[f"Voix{idVS}"])) else "Non",
                                     "Ecart de voix": int(row[f"Voix{idNFP}"]) - int(row[f"Voix{idVS}"]),
                                     "Ecart de voix (valeur absolue)": abs(int(row[f"Voix{idNFP}"]) - int(row[f"Voix{idVS}"]))
                 }
@@ -112,7 +112,7 @@ def Loadlegis2022Data():
                                         "Candidat NUPES ou Dissident de gauche": candidatNupes,
                                         "Contre": "",
                                         "Elu": elu,
-                                        "Gagné": voix > voixVs,
+                                        "Gagné": "Oui" if (voix > voixVs) else "Non",
                                         "Ecart de voix": voix - voixVs,
                                         "Ecart de voix (valeur absolue)": abs(voix - voixVs)
                     }
