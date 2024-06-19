@@ -31,55 +31,89 @@ def Loadlegis2022Data():
             elif row["Nuance2"] in ["NUP", "ECO", "DVG"]:
                 idNFP = 2
                 idVS = 1
+            elif "Nuance3" in row.keys() and row["Nuance3"] in ["NUP", "ECO", "DVG"]:
+                idNFP = 3
+                idVS = 1
+            # print(circo, idNFP, idVS)
 
             if idNFP == 0 or row[f"Voix{idVS}"] == None:
                 with open('data\legislative2022_t1_par_circo.csv', encoding="utf8") as f:
                     dataT1 = csv.DictReader(f, delimiter=';')
+
                     voix = 0
+                    voixVs = 0
+                    candidatNupes = ""
+                    elu = ""
                     for rowT1 in dataT1:
                         if f'{rowT1["Code du département"]}{rowT1["Code de la circonscription"]}' == circo:
                             for i in range(30):
                                 if (not f"Nom{i}" in rowT1.keys()) or rowT1[f"Nom{i}"] == None:
                                     break
-                                candidatNupes = ""
                                 if rowT1[f"Nuance{i}"] in ["NUP", "ECO", "DVG"]:
                                     if rowT1[f"Nuance{i}"] == "NUP":
                                         candidatNupes = f'{rowT1[f"Prénom{i}"]} {rowT1[f"Nom{i}"]}'
                                     voix += int(rowT1[f"Voix{i}"])
                                 else:
-                                    voix -= int(rowT1[f"Voix{i}"])
-                            dataParsed[circo] = {"Tour": 1,
-                                                "candidat NUPES ou Dissident de gauche": candidatNupes,
-                                                "contre": "",
-                                                "écart de voix": voix
+                                    if int(rowT1[f"Voix{i}"]) > voixVs:
+                                        voixVs = int(rowT1[f"Voix{i}"])
+                                if rowT1[f"Sièges{i}"] == "Elu":
+                                    elu = f'{rowT1[f"Prénom{i}"]} {rowT1[f"Nom{i}"]} {rowT1[f"Nuance{i}"]}'
+                            dataParsed[circo] = {"Circonscription": circo,
+                                                "Tour": 1,
+                                                "Candidat NUPES ou Dissident de gauche": candidatNupes,
+                                                "Contre": "",
+                                                "Elu": elu,
+                                                "Gagné": voix > voixVs,
+                                                "Ecart de voix": voix - voixVs,
+                                                "Ecart de voix (valeur absolue)": abs(voix - voixVs)
                             }
-                            # print(dataParsed[circo])
+
                             break
             else:
-                dataParsed[circo] = {"Tour": 2,
-                                    "candidat NUPES ou Dissident de gauche": f'{row[f"Prénom{idNFP}"]} {row[f"Nom{idNFP}"]}',
-                                    "contre": f'{row[f"Prénom{idVS}"]} {row[f"Nom{idVS}"]}',
-                                    "écart de voix": int(row[f"Voix{idNFP}"]) - int(row[f"Voix{idVS}"])
+                contre = ""
+                elu = ""
+                for i in range(1, 5):
+                    if not row[f"Nuance{i}"] in ["NUP", "ECO", "DVG"] and row[f"Prénom{i}"] != None:
+                        contre += f'{row[f"Prénom{i}"]} {row[f"Nom{i}"]} {row[f"Nuance{i}"]}' + ', '
+                    if row[f"Sièges{i}"] == "Elu":
+                        elu = f'{row[f"Prénom{i}"]} {row[f"Nom{i}"]} {row[f"Nuance{i}"]}'
+                dataParsed[circo] = {"Circonscription": circo,
+                                    "Tour": 2,
+                                    "Candidat NUPES ou Dissident de gauche": f'{row[f"Prénom{idNFP}"]} {row[f"Nom{idNFP}"]}',
+                                    "Contre": contre,
+                                    "Elu": elu,
+                                    "Gagné": int(row[f"Voix{idNFP}"]) > int(row[f"Voix{idVS}"]),
+                                    "Ecart de voix": int(row[f"Voix{idNFP}"]) - int(row[f"Voix{idVS}"]),
+                                    "Ecart de voix (valeur absolue)": abs(int(row[f"Voix{idNFP}"]) - int(row[f"Voix{idVS}"]))
                 }
         with open('data\legislative2022_t1_par_circo.csv', encoding="utf8") as f:
             dataT1 = csv.DictReader(f, delimiter=';')
             voix = 0
+            voixVs = 0
+            candidatNupes = ""
+            elu = ""
             for rowT1 in dataT1:
                 if "Elu" in rowT1.values():
                     circo = f'{rowT1["Code du département"]}{rowT1["Code de la circonscription"]}'
                     for i in range(30):
                         if (not f"Nom{i}" in rowT1.keys()) or rowT1[f"Nom{i}"] == None:
                             break
-                        candidatNupes = ""
                         if rowT1[f"Nuance{i}"] in ["NUP", "ECO", "DVG"]:
                             if rowT1[f"Nuance{i}"] == "NUP":
                                 candidatNupes = f'{rowT1[f"Prénom{i}"]} {rowT1[f"Nom{i}"]}'
                             voix += int(rowT1[f"Voix{i}"])
                         else:
-                            voix -= int(rowT1[f"Voix{i}"])
-                    dataParsed[circo] = {"Tour": 1,
-                                        "candidat NUPES ou Dissident de gauche": candidatNupes,
-                                        "contre": "",
-                                        "écart de voix": voix
+                            if int(rowT1[f"Voix{i}"]) > voixVs:
+                                voixVs = int(rowT1[f"Voix{i}"])
+                        if rowT1[f"Sièges{i}"] == "Elu":
+                            elu = f'{rowT1[f"Prénom{i}"]} {rowT1[f"Nom{i}"]} {rowT1[f"Nuance{i}"]}'
+                    dataParsed[circo] = {"Circonscription": circo,
+                                        "Tour": 1,
+                                        "Candidat NUPES ou Dissident de gauche": candidatNupes,
+                                        "Contre": "",
+                                        "Elu": elu,
+                                        "Gagné": voix > voixVs,
+                                        "Ecart de voix": voix - voixVs,
+                                        "Ecart de voix (valeur absolue)": abs(voix - voixVs)
                     }
         return dataParsed

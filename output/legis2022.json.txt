@@ -1,0 +1,21 @@
+Champ présent dans les données géo des circo
+- "ID": "33004",
+- "code_dpt": "33",
+- "nom_dpt": "GIRONDE",
+- "nom_reg": "AQUITAINE-LIMOUSIN-POITOU-CHARENTES",
+- "num_circ": "4",
+- "code_reg": "75",
+
+Champs ajoutés :
+- "Circonscription": aggrégation du code département et numéro de circo (4 charactères, les numéro de circo<10 sont au format 0x)
+- "Tour": Si le candidat parmis ["NUP", "ECO", "DVG"] a atteint de le second tour ou a été élu dès le premier tour, valeur de 1 sinon 2
+- "Candidat NUPES ou Dissident de gauche": Candidat trouvé parmis ["NUP", "ECO", "DVG"], possibles erreurs en cas de dissidents
+- "Candidat Contre": vide si Tour=1, sinon le candidat affronté au second tour. Ignore le 3ème ou 4ème candidat d'une triangulaire ou quadrilaire (oui il y en a une)
+- "Elu": Candidat élu dans la circo au format "Prénom Nom Nuance". Infos manquante pour les circos ou la gauche n'était pas au second tour sauf si quelqu'un est élu au 1er tour
+- "Gagné": True si le candidat NUPES ou Dissident de gauche a gagné, False sinon
+- "Ecart de voix": si Tour=1, écart de voix entre la gauche unie ["NUP", "ECO", "DVG"] et le 2ème candidat ayant reçu le plus de voix. Si tour=2, écart de voix avec le candidat élu ou le 2ème
+- "Ecart de voix (valeur absolue)": valeur absolue de "Ecart de voix" pour que la carte soit plus lisible (?)
+
+Evidemment je ne garantis pas que tout soit juste, d'abord parce que les étiquettes de gauche sont vagues suivant les circos.
+Aussi parce que les données sont très mal formatées donc le traîtement des données est un peu farfelu
+Ensuite les chiffres varient entre les sources (de quelques dizaines de voix tout au plus) entre data.gouv.fr (utilisées ici) et les chiffres de l'intérieur
